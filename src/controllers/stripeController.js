@@ -82,5 +82,36 @@ const createSubscription=async(req,res)=>{
       }
       return res.status(400).send({status:true,message:"Subscription can't be created successfully!"})
 }
-
-module.exports={createCustomer,createProduct,createPrice,createSubscription,createPayment,attachPayment,addPaymentToCustomer}
+const createPaymentIntent=async(req,res)=>{
+  const paymentIntent = await stripe.paymentIntents.create({
+   ...req.body
+  });
+  return res.status(200).send({status:true,message:"Payment Intent created successfully!",data:paymentIntent})
+}
+const confirmPaymentIntent=async(req,res)=>{
+  const paymentIntentId=req.params.id
+  const paymentIntent = await stripe.paymentIntents.confirm(
+    paymentIntentId,
+    {
+      ...req.body
+    }
+  );
+  return res.status(200).send({status:true,message:"Payment Intent confirmed successfully!",data:paymentIntent})
+}
+const createSetuptIntent=async(req,res)=>{
+  const setupIntent = await stripe.setupIntents.create({
+   ...req.body
+  });
+  return res.status(200).send({status:true,message:"Payment Intent created successfully!",data:setupIntent})
+}
+const confirmSetupIntent=async(req,res)=>{
+  const setupIntentId=req.params.id
+  const setupIntent = await stripe.setupIntents.confirm(
+    setupIntentId,
+    {
+      ...req.body
+    }
+  )
+  return res.status(200).send({status:true,message:"Payment Intent confirmed successfully!",data:setupIntent})
+}
+module.exports={createCustomer,createProduct,createPrice,createSubscription,createPayment,attachPayment,addPaymentToCustomer,createPaymentIntent,confirmPaymentIntent,createSetuptIntent,confirmSetupIntent}
